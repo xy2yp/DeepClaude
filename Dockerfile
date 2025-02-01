@@ -8,14 +8,8 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-# 安装 uv
-RUN pip install --no-cache-dir uv
-
-# 复制项目配置文件
-COPY pyproject.toml ./
-
-# 使用 uv 安装依赖
-RUN uv add \
+# 安装依赖
+RUN pip install --no-cache-dir \
     aiohttp==3.11.11 \
     anthropic==0.45.2 \
     colorlog==6.9.0 \
@@ -30,4 +24,4 @@ COPY ./app ./app
 EXPOSE 8000
 
 # 启动命令
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
