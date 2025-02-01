@@ -1,7 +1,6 @@
 """Claude API 客户端"""
 import json
 from typing import AsyncGenerator
-import anthropic
 from app.utils.logger import logger
 from .base_client import BaseClient
 

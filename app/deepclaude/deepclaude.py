@@ -10,7 +10,7 @@ from app.clients import DeepSeekClient, ClaudeClient
 class DeepClaude:
     """处理 DeepSeek 和 Claude API 的流式输出衔接"""
     
-    def __init__(self, deepseek_api_key: str, claude_api_key: str, deepseek_api_url: str = "https://api.deepseek.com/v1/chat/completions", claude_api_url: str = "https://api.claude.ai/v1/chat/completions"):
+    def __init__(self, deepseek_api_key: str, claude_api_key: str, deepseek_api_url: str = "https://api.deepseek.com/v1/chat/completions", claude_api_url: str = "https://api.anthropic.com/v1/messages"):
         """初始化 API 客户端
         
         Args:

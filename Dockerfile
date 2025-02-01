@@ -11,7 +11,6 @@ ENV PYTHONUNBUFFERED=1 \
 # 安装依赖
 RUN pip install --no-cache-dir \
     aiohttp==3.11.11 \
-    anthropic==0.45.2 \
     colorlog==6.9.0 \
     fastapi==0.115.8 \
     python-dotenv==1.0.1 \
