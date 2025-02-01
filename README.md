@@ -14,6 +14,7 @@
 - [Introduction](#introduction)
 - [Implementation](#implementation)
 - [How to run](#how-to-run)
+  - [1. 获得运行所需的 API](#1-获得运行所需的-api)
 - [Deployment](#deployment)
 - [Technology Stack](#technology-stack)
 - [Buy me a coffee](#buy-me-a-coffee)
@@ -42,6 +43,13 @@
 # How to run
 
 > 项目支持本地运行和服务器运行，本地运行可与 Ollama 搭配，实现用本地的 DeepSeek R1 与 Claude 组合输出
+
+
+## 1. 获得运行所需的 API
+
+1. 获取 DeepSeek API，因为最近 DeepSeek 还在遭受攻击，所以经常无法使用，推荐使用 Siliconflow 的效果更好（也可以本地 Ollama 的）: https://cloud.siliconflow.cn/i/RXikvHE2
+2. 获取 Claude 的 API KEY （目前还没有做中转模式，以及对 Google 和 AWS 托管的版本的兼容支持，欢迎 PR）：https://console.anthropic.com
+   注：`但是！大家也可以联系我，我可以为大家提供按量计费的 DeepClaude 的直接 API 服务！微信：geekthings`
 
 Step 1. 克隆本项目到适合的文件夹并进入项目
 
