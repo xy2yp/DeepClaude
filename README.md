@@ -15,6 +15,7 @@
 - [Implementation](#implementation)
 - [How to run](#how-to-run)
   - [1. 获得运行所需的 API](#1-获得运行所需的-api)
+  - [2. 开始运行](#2-开始运行)
 - [Deployment](#deployment)
 - [Technology Stack](#technology-stack)
 - [Buy me a coffee](#buy-me-a-coffee)
@@ -51,6 +52,7 @@
 2. 获取 Claude 的 API KEY （目前还没有做中转模式，以及对 Google 和 AWS 托管的版本的兼容支持，欢迎 PR）：https://console.anthropic.com
    注：`但是！大家也可以联系我，我可以为大家提供按量计费的 DeepClaude 的直接 API 服务！微信：geekthings`
 
+## 2. 开始运行
 Step 1. 克隆本项目到适合的文件夹并进入项目
 
 ```bash
