@@ -17,6 +17,7 @@
 - [Deployment](#deployment)
 - [Technology Stack](#technology-stack)
 - [Buy me a coffee](#buy-me-a-coffee)
+- [About Me](#about-me)
 
 # Introduction
 最近 DeepSeek 推出了 [DeepSeek R1 模型](https://platform.deepseek.com)，在推理能力上已经达到了第一梯队。但是 DeepSeek R1 在一些日常任务的输出上可能仍然无法匹敌 Claude 3.5 Sonnet。Aider 团队最近有一篇研究，表示通过[采用 DeepSeek R1 + Claude 3.5 Sonnet 可以实现最好的效果](https://aider.chat/2025/01/24/r1-sonnet.html)。
@@ -103,3 +104,8 @@ Step 6. 配置程序到你的 Chatbox（推荐 [NextChat](https://nextchat.dev/)
 
 # Buy me a coffee
 <img src="https://img.erlich.fun/personal-blog/uPic/IMG_3625.JPG" alt="微信赞赏码" style="width: 200px;"/>
+
+# About Me
+- Email: erlichliu@gmail.com
+- Website: [Erlichliu](https://erlich.fun)
+  
