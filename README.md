@@ -5,7 +5,6 @@
 
 [![GitHub license](https://img.erlich.fun/personal-blog/uPic/deepclaude.svg)](#)
 [![Compatible with](https://img.shields.io/badge/-ChatGPT-412991?style=flat-square&logo=openai&logoColor=FFFFFF)](https://openai.com)
-[![Compatible with](https://img.shields.io/badge/fastapi?style=flat-square&logo=openai&logoColor=FFFFFF)](https://openai.com)
 
 </div>
 
