@@ -12,6 +12,7 @@
 
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
+- [Implementation](#implementation)
 - [How to run](#how-to-run)
 - [Deployment](#deployment)
 - [Technology Stack](#technology-stack)
@@ -32,7 +33,10 @@
 
 用户可以自行运行在自己的服务器，并对外提供开放 API 接口，接入 [OneAPI](https://github.com/songquanpeng/one-api) 等实现统一分发（token 消耗部分仍需开发）。也可以接入你的日常 ChatBox  软件以及 接入 [Cursor](https://www.cursor.com/) 等软件实现更好的编程效果（Claude 的流式输出+ Tool use 仍需开发）。
 
+# Implementation
+⚠️Notice: 目前只支持流式输出模式（因为这是效率最高的模式，不会浪费时间）；接下来会实现第一段 DeepSeek 推理阶段流式，Claude 输出非流式的模式（处于节省时间的考虑）。
 
+![image-20250201212456050](https://img.erlich.fun/personal-blog/uPic/image-20250201212456050.png)
 
 # How to run
 
