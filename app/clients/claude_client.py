@@ -14,7 +14,6 @@ class ClaudeClient(BaseClient):
             api_url: Claude API地址
         """
         super().__init__(api_key, api_url)
-        self.client = anthropic.Anthropic(api_key=api_key)
         
     async def stream_chat(self, messages: list, model: str = "claude-3-5-sonnet-20241022") -> AsyncGenerator[tuple[str, str], None]:
         """流式对话
