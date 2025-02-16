@@ -1,9 +1,11 @@
 """基础客户端类,定义通用接口"""
 
-from typing import AsyncGenerator, Optional
 from abc import ABC, abstractmethod
+from typing import AsyncGenerator, Optional
+
 import aiohttp
 from aiohttp.client_exceptions import ClientError, ServerTimeoutError
+
 from app.utils.logger import logger
 
 
@@ -14,11 +16,8 @@ class BaseClient(ABC):
     # total: 总超时时间
     # connect: 连接超时时间
     # sock_read: 读取超时时间
-        # TODO: 默认时间的设置涉及到模型推理速度，需要根据实际情况进行调整
-    DEFAULT_TIMEOUT = aiohttp.ClientTimeout(
-        total=600, connect=10, sock_read=500
-    )
-    
+    # TODO: 默认时间的设置涉及到模型推理速度，需要根据实际情况进行调整
+    DEFAULT_TIMEOUT = aiohttp.ClientTimeout(total=600, connect=10, sock_read=500)
 
     def __init__(
         self,
@@ -92,13 +91,15 @@ class BaseClient(ABC):
             raise
 
     @abstractmethod
-    async def stream_chat(self, messages: list, model: str) -> AsyncGenerator[tuple[str, str], None]:
+    async def stream_chat(
+        self, messages: list, model: str
+    ) -> AsyncGenerator[tuple[str, str], None]:
         """流式对话，由子类实现
-        
+
         Args:
             messages: 消息列表
             model: 模型名称
-            
+
         Yields:
             tuple[str, str]: (内容类型, 内容)
         """
