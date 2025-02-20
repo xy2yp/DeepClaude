@@ -2,8 +2,8 @@ name: Upstream Sync
 
 on:
   schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+    - cron: "0 0 * * *"    # 每天零点运行
+  workflow_dispatch:        # 支持手动触发
 
 jobs:
   # 检查是否为 fork 仓库
@@ -46,15 +46,32 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
       
-      # 运行同步动作
+      # 以下是原来的同步配置（注释掉）
+      # - name: Sync upstream changes
+      #   id: sync
+      #   uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+      #   with:
+      #     upstream_sync_repo: ErlichLiu/DeepClaude
+      #     upstream_sync_branch: ${{ env.BRANCH_NAME }}
+      #     target_sync_branch: ${{ env.BRANCH_NAME }}
+      #     target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     upstream_pull_args: --allow-unrelated-histories --no-edit
+      #     shallow_since: '1 days ago'
+      #     test_mode: false
+
+      # 新的同步配置，添加了文件排除
       - name: Sync upstream changes
         id: sync
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
-          upstream_sync_repo: ErlichLiu/DeepClaude
-          upstream_sync_branch: ${{ env.BRANCH_NAME }}
-          target_sync_branch: ${{ env.BRANCH_NAME }}
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: ErlichLiu/DeepClaude          # 上游仓库
+          upstream_sync_branch: ${{ env.BRANCH_NAME }}      # 上游分支
+          target_sync_branch: ${{ env.BRANCH_NAME }}        # 目标分支
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}    # GitHub Token
           upstream_pull_args: --allow-unrelated-histories --no-edit
+          # 排除 docker-build.yml 和 sync.yml，防止被上游更改覆盖
+          upstream_sync_excludes: |
+            .github/workflows/docker-build.yml
+            .github/workflows/sync.yml
           shallow_since: '1 days ago'
           test_mode: false
