@@ -1,77 +1,67 @@
-name: Upstream Sync
+name: Sync Upstream Code
 
 on:
   schedule:
-    - cron: "0 0 * * *"    # 每天零点运行
-  workflow_dispatch:        # 支持手动触发
+    # 每天晚上 0 点整运行
+    - cron: '0 0 * * *'
 
 jobs:
-  # 检查是否为 fork 仓库
-  check-repository:
-    name: Check Repository Type
+  sync:
     runs-on: ubuntu-latest
-    outputs:
-      is_fork: ${{ steps.check.outputs.is_fork }}
+
     steps:
-      - id: check
+      # Step 1: 检查出目标仓库代码
+      - name: Checkout Target Repository
+        uses: actions/checkout@v3
+        with:
+          ref: main # 确保使用主分支，修改为你的默认分支名称
+
+      # Step 2: 添加上游仓库为 remote
+      - name: Add Upstream Repository
         run: |
-          if [ "${{ github.repository }}" != "ErlichLiu/DeepClaude" ]; then
-            echo "is_fork=true" >> $GITHUB_OUTPUT
+          git remote add upstream https://github.com/ErlichLiu/DeepClaude.git
+          git fetch upstream
+
+      # Step 3: 同步上游代码
+      - name: Sync Upstream Changes
+        id: sync # 给步骤设置一个 ID，供后续条件判断使用
+        run: |
+          # 合并上游代码到当前分支
+          git merge upstream/main --no-commit --no-ff || true
+          
+          # 排除不需要覆盖的文件
+          git restore --staged .github/workflows/docker-build.yml
+          git restore --staged .github/workflows/sync.yml
+
+          # 提交更改
+          git commit -m "Sync with upstream" || echo "No changes to commit"
+
+      # Step 4: 推送更改到目标仓库
+      - name: Push Changes
+        id: push # 给步骤设置一个 ID，供后续条件判断使用
+        run: |
+          git push origin main || echo "No changes to push"
+
+      # Step 5: 发送 WXPusher 消息通知（仅在有更新或同步失败时）
+      - name: Send Notification
+        if: steps.sync.outcome == 'success' && steps.push.outcome == 'success' && steps.sync.outputs.result != 'No changes to commit' || failure()
+        env:
+          WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
+          WXPUSHER_UID: ${{ secrets.WXPUSHER_UID }}
+        run: |
+          if [ "$(git log -1 --pretty=%B)" != "No changes to commit" ]; then
+            MESSAGE="✅ [GitHub Actions] 同步完成！\n\n- 仓库：${{ github.repository }}\n- 分支：main\n- 更新内容：$(git log -1 --pretty=%B)\n\n🔗 [查看仓库](${{ github.server_url }}/${{ github.repository }})"
           else
-            echo "is_fork=false" >> $GITHUB_OUTPUT
+            MESSAGE="❌ [GitHub Actions] 同步失败，请检查日志。\n\n- 仓库：${{ github.repository }}\n- 分支：main\n\n🔗 [查看仓库](${{ github.server_url }}/${{ github.repository }})"
           fi
 
-  # 同步上游更改
-  sync:
-    needs: check-repository
-    if: needs.check-repository.outputs.is_fork == 'true'
-    name: Sync Latest From Upstream
-    runs-on: ubuntu-latest
-    steps:
-      # 标准签出
-      - name: Checkout target repo
-        uses: actions/checkout@v4
-        # 如果上游仓库有对.github/workflows/下的文件进行变更，则需要使用有workflow权限的token
-        # with:
-        #   token: ${{ secrets.ACTION_TOKEN }}
-      
-      # 获取分支名（区分 PR 和普通提交场景）
-      - name: Get branch name (merge)
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
-        
-      - name: Get branch name (pull request)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-      
-      # 以下是原来的同步配置（注释掉）
-      # - name: Sync upstream changes
-      #   id: sync
-      #   uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
-      #   with:
-      #     upstream_sync_repo: ErlichLiu/DeepClaude
-      #     upstream_sync_branch: ${{ env.BRANCH_NAME }}
-      #     target_sync_branch: ${{ env.BRANCH_NAME }}
-      #     target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     upstream_pull_args: --allow-unrelated-histories --no-edit
-      #     shallow_since: '1 days ago'
-      #     test_mode: false
-
-      # 新的同步配置，添加了文件排除
-      - name: Sync upstream changes
-        id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
-        with:
-          upstream_sync_repo: ErlichLiu/DeepClaude          # 上游仓库
-          upstream_sync_branch: ${{ env.BRANCH_NAME }}      # 上游分支
-          target_sync_branch: ${{ env.BRANCH_NAME }}        # 目标分支
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }}    # GitHub Token
-          upstream_pull_args: --allow-unrelated-histories --no-edit
-          # 排除 docker-build.yml 和 sync.yml，防止被上游更改覆盖
-          upstream_sync_excludes: |
-            .github/workflows/docker-build.yml
-            .github/workflows/sync.yml
-          shallow_since: '1 days ago'
-          test_mode: false
+          # 调用 WXPusher API 发送消息
+          curl -s -X POST "https://wxpusher.zjiecode.com/api/send/message" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "appToken": "'"$WXPUSHER_APP_TOKEN"'",
+              "content": "'"$MESSAGE"'",
+              "summary": "DeepClaude 同步通知",
+              "contentType": 3,
+              "uids": ["'"$WXPUSHER_UID"'"]
+            }'
