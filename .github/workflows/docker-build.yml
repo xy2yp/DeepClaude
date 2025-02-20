@@ -73,17 +73,17 @@ jobs:
 
        # 发送 WXPusher 通知
       - name: Send WXPusher Notification
-        if: always() # 始终运行此步骤，无论构建成功或失败
-        env:
-          WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
-          WXPUSHER_UID: ${{ secrets.WXPUSHER_UID }}
-        run: |
-          if [ ${{ steps.build.outcome }} == "success" ] && [ ${{ steps.push.outcome }} == "success" ]; then
-            MESSAGE="✅ [GitHub Actions] DeepClaude 镜像构建成功！"
-          else
-            MESSAGE="❌ [GitHub Actions] DeepClaude 镜像构建失败，请检查日志。"
-          fi
-
+      if: always() # 始终运行此步骤
+      env:
+        WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
+        WXPUSHER_UID: ${{ secrets.WXPUSHER_UID }}
+      run: |
+        if [[ "${{ steps.build.outcome }}" == "success" && "${{ steps.push.outcome }}" == "success" ]]; then
+          MESSAGE="✅ [GitHub Actions]\n DeepClaude 镜像构建成功！\n\n- 仓库：${{ github.repository }}\n- 分支：${{ github.ref_name }}\n- 镜像：xy2yp/DeepClaude:latest"
+        else
+          MESSAGE="❌ [GitHub Actions]\n DeepClaude 镜像构建失败，请检查日志。\n\n- 仓库：${{ github.repository }}\n- 分支：${{ github.ref_name }}"
+        fi
+        
           # 调用 WXPusher API 发送消息
           curl -s -X POST "https://wxpusher.zjiecode.com/api/send/message" \
             -H "Content-Type: application/json" \
