@@ -18,6 +18,8 @@
 <details>
 <summary><strong>更新日志：</strong></summary> 
 <div>
+2025-02-21.1: 添加 Claude 这段的详细数据结构安全检查。
+
 2025-02-16.1: 支持 claude 侧采用请求体中的自定义模型名称。（如果你采用 oneapi 等中转方，那么现在可以通过配置环境变量或在 API 请求中采用任何 Gemini 等模型完成后半部分。接下来将重构代码，更清晰地支持不同的思考模型组合。）
 
 2025-02-08.2: 支持非流式请求，支持 OpenAI 兼容的 models 接口返回。（⚠️ 当前暂未实现正确的 tokens 消耗统计，稍后更新）
@@ -91,7 +93,7 @@
 
 ## 1. 获得运行所需的 API
 
-1. 获取 DeepSeek API，因为最近 DeepSeek 还在遭受攻击，所以经常无法使用，推荐使用 Siliconflow 的效果更好（也可以本地 Ollama 的）: https://cloud.siliconflow.cn/i/RXikvHE2 (点击此链接可以获得到 2000 万免费 tokens)
+1. 获取 DeepSeek API，因为最近 DeepSeek 官方的供应能里不足，所以经常无法使用，~~推荐使用 Siliconflow 的效果更好（也可以本地 Ollama 的）: https://cloud.siliconflow.cn/i/RXikvHE2 (点击此链接可以获得到 2000 万免费 tokens)~~ 目前仅推荐字节的火山引擎，可以做到 100% 回复率，速度也非常不错。可以扫码走我的邀请码，一起获得奖励额度。![火山引擎邀请海报](https://img.erlich.fun/personal-blog/uPic/火山引擎邀请海报.png)
 2. 获取 Claude 的 API KEY （目前还没有做中转模式，以及对 Google 和 AWS 托管的版本的兼容支持，欢迎 PR）：https://console.anthropic.com
 
 ## 2. 开始运行（本地运行）
