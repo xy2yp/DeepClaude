@@ -50,9 +50,9 @@ jobs:
           WXPUSHER_UID: ${{ secrets.WXPUSHER_UID }}
         run: |
           if [ "$(git log -1 --pretty=%B)" != "No changes to commit" ]; then
-            MESSAGE="✅ [GitHub Actions] 同步完成！\n\n- 仓库：${{ github.repository }}\n- 分支：main\n- 更新内容：$(git log -1 --pretty=%B)\n\n🔗 [查看仓库](${{ github.server_url }}/${{ github.repository }})"
+            MESSAGE="✅ [GitHub Actions] 同步完成！\n\n- 仓库：${{ github.repository }}\n- 分支：main\n- 更新内容：$(git log -1 --pretty=%B)"
           else
-            MESSAGE="❌ [GitHub Actions] 同步失败，请检查日志。\n\n- 仓库：${{ github.repository }}\n- 分支：main\n\n🔗 [查看仓库](${{ github.server_url }}/${{ github.repository }})"
+            MESSAGE="❌ [GitHub Actions] 同步失败，请检查日志。\n\n- 仓库：${{ github.repository }}\n- 分支：main"
           fi
 
           # 调用 WXPusher API 发送消息
@@ -61,7 +61,7 @@ jobs:
             -d '{
               "appToken": "'"$WXPUSHER_APP_TOKEN"'",
               "content": "'"$MESSAGE"'",
-              "summary": "DeepClaude 同步通知",
+              "summary": "DeepClaude 更新通知",
               "contentType": 3,
               "uids": ["'"$WXPUSHER_UID"'"]
             }'
