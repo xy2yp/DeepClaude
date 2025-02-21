@@ -1,7 +1,7 @@
 # 工作流名称
 name: Docker Build
 
-# 触发条件：推送到main分支或手动触发
+# 触发条件：推送到main分支或手动触发 
 on:
   push:
     branches: [ "main" ]
@@ -39,10 +39,6 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          # 注释掉 GitHub Container Registry 相关配置
-          #registry: ghcr.io
-          #username: ${{ github.repository_owner }}
-          #password: ${{ secrets.GITHUB_TOKEN }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -60,8 +56,9 @@ jobs:
         with:
           driver: docker-container
 
-      # 构建并推送 Docker 镜像
+      # 构建并推送 Docker 镜像（添加id）
       - name: Build and push Docker image
+        id: docker_build  # 添加的显式ID
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -70,15 +67,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: xy2yp/deepclaude:latest
 
-
-       # 发送 WXPusher 通知
+      # 发送 WXPusher 通知（修改判断逻辑）
       - name: Send WXPusher Notification
-        if: always() # 始终运行此步骤
+        if: always() # 保持原样
         env:
           WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
           WXPUSHER_UID: ${{ secrets.WXPUSHER_UID }}
         run: |
-          if [[ "${{ steps.build.outcome }}" == "success" && "${{ steps.push.outcome }}" == "success" ]]; then
+          # 修改为使用 docker_build 步骤的状态判断
+          if [[ "${{ steps.docker_build.outcome }}" == "success" ]]; then
             MESSAGE="✅ [GitHub Actions]\n DeepClaude 镜像构建成功！\n\n- 仓库：${{ github.repository }}\n- 分支：${{ github.ref_name }}\n- 镜像：xy2yp/DeepClaude:latest"
           else
             MESSAGE="❌ [GitHub Actions]\n DeepClaude 镜像构建失败，请检查日志。\n\n- 仓库：${{ github.repository }}\n- 分支：${{ github.ref_name }}"
@@ -90,7 +87,7 @@ jobs:
             -d '{
               "appToken": "'"$WXPUSHER_APP_TOKEN"'",
               "content": "'"$MESSAGE"'",
-              "summary": "Docker 镜像构建通知",
-              "contentType": 1,
+              "summary": "DeepClaude 镜像构建通知",
+              "contentType": 3,
               "uids": ["'"$WXPUSHER_UID"'"]
             }'
