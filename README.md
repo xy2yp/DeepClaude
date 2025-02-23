@@ -101,7 +101,7 @@
 Step 1. 克隆本项目到适合的文件夹并进入项目
 
 ```bash
-git clone git@github.com:ErlichLiu/DeepClaude.git
+git clone https://github.com/ErlichLiu/DeepClaude.git
 cd DeepClaude
 ```
 
