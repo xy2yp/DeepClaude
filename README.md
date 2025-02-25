@@ -31,6 +31,8 @@
 <details>
 <summary><strong>更新日志：</strong></summary> 
 <div>
+2025-02-25.1: 添加 system message 对于 Claude 3.5 Sonnet 的支持
+
 2025-02-23.1: 重构代码，支持 OpenAI 兼容模型，deepgeminiflash 和 deepgeminipro 配置更方便（请详细查看 READEME 和 .env.example 内的说明）。
 
 2025-02-21.1: 添加 Claude 这段的详细数据结构安全检查。
