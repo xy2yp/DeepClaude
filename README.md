@@ -92,7 +92,7 @@
 
 ## 1. 获得运行所需的 API
 
-1. 获取 DeepSeek API，因为最近 DeepSeek 官方的供应能里不足，所以经常无法使用，~~推荐使用 Siliconflow 的效果更好（也可以本地 Ollama 的）: https://cloud.siliconflow.cn/i/RXikvHE2 (点击此链接可以获得到 2000 万免费 tokens)~~ 目前仅推荐字节的火山引擎，可以做到 100% 回复率，速度也非常不错。可以扫码走我的邀请码，一起获得奖励额度。![火山引擎邀请海报](https://img.erlich.fun/personal-blog/uPic/火山引擎邀请海报.png)
+1. 获取 DeepSeek API，因为最近 DeepSeek 官方的供应能里不足，所以经常无法使用，不推荐。目前更推荐使用派欧算力云的 DeepSeek r1，因为我们对思维链的准确性要求很高，派欧算力云的准确性是目前最好的。并且赠送的额度也是最多的，通过我的邀请码注册可以获得 50 元，可以点击链接注册：https://ppinfra.com/user/register?invited_by=TXTPQF 或者扫码注册：![派欧算力云邀请链接](https://img.erlich.fun/personal-blog/uPic/ppinfra-invite-poster.png)
 2. 获取 Claude 的 API KEY：https://console.anthropic.com。(也可采用其他中转服务，如 Openrouter 以及其他服务商的 API KEY)
 3. 获取 Gemini 的 API KEY：https://aistudio.google.com/apikey (有免费的额度，日常够用)
 
