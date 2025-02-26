@@ -136,13 +136,6 @@ class OpenAICompatibleComposite:
                 Here's my another model's reasoning process:\n{reasoning}\n\n
                 Based on this reasoning, provide your response directly to me:"""
 
-                # 处理可能 messages 内存在 role = system 的情况
-                openai_messages = [
-                    message
-                    for message in openai_messages
-                    if message.get("role", "") != "system"
-                ]
-
                 # 检查过滤后的消息列表是否为空
                 if not openai_messages:
                     raise ValueError("消息列表为空，无法处理请求")
