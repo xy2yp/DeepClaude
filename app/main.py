@@ -9,7 +9,6 @@ from fastapi.staticfiles import StaticFiles
 
 from app.utils.auth import verify_api_key
 from app.utils.logger import logger
-from app.config import load_models_config
 from app.manager import model_manager
 
 # 加载环境变量
@@ -53,20 +52,6 @@ logger.info("开始请求")
 async def root():
     logger.info("访问了根路径")
     return {"message": "Welcome to DeepClaude API"}
-
-
-@app.get("/v2/models")
-async def list_models():
-    """
-    获取可用模型列表
-    返回格式遵循 OpenAI API 标准
-    """
-    try:
-        config = load_models_config()
-        return {"object": "list", "data": config["models"]}
-    except Exception as e:
-        logger.error(f"加载模型配置时发生错误: {e}")
-        return {"error": str(e)}
 
 
 @app.post("/v1/chat/completions", dependencies=[Depends(verify_api_key)])

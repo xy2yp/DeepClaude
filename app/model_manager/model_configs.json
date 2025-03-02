@@ -2,7 +2,7 @@
     "reasoner_models": {
         "DeepSeek/DeepSeek-Reasoner": {
             "model_id": "deepseek-reasoner",
-            "api_key": "sk-e68b2ff241b840dd9ad3d6c12d6e8516",
+            "api_key": "*************",
             "api_base_url": "https://api.deepseek.com",
             "api_request_address": "v1/chat/completions",
             "is_origin_reasoning": true,
@@ -10,7 +10,7 @@
         },
         "Volcengine/DeepSeek-R1": {
             "model_id": "deepseek-r1-250120",
-            "api_key": "0e09ca72-1c0d-4537-9fb2-31474a8a0e67",
+            "api_key": "**************",
             "api_base_url": "https://ark.cn-beijing.volces.com/api",
             "api_request_address": "v3/chat/completions",
             "is_origin_reasoning": true,
@@ -20,7 +20,7 @@
     "target_models": {
         "Anthropic/Claude-3-7-Sonnet": {
             "model_id": "claude-3-7-sonnet-20250219",
-            "api_key": "sk-e68b2ff241b840dd9ad3d6c12d6e8516",
+            "api_key": "**************",
             "api_base_url": "https://api.anthropic.com",
             "api_request_address": "v1/messages",
             "model_format": "anthropic",
@@ -28,15 +28,15 @@
         },
         "DMXapi/Claude-3-7-Sonnet": {
             "model_id": "claude-3-7-sonnet-20250219",
-            "api_key": "sk-W2YPP12Mubz1HcmorPzWrKwNOZex6xDDNs2rvjuOxdOUMOPN",
-            "api_base_url": "https://vip.dmxapi.com",
+            "api_key": "**************",
+            "api_base_url": "https://www.dmxapi.cn",
             "api_request_address": "v1/chat/completions",
             "model_format": "openai",
             "is_valid": true
         },
         "OpenRouter/Claude-3-7-Sonnet": {
             "model_id": "anthropic/claude-3.7-sonnet",
-            "api_key": "********",
+            "api_key": "***********",
             "api_base_url": "https://openrouter.ai/api",
             "api_request_address": "v1/chat/completions",
             "model_format": "openai",
@@ -44,7 +44,7 @@
         },
         "Gemini/Gemini-2.0-Flash": {
             "model_id": "gemini-2.0-flash",
-            "api_key": "AIzaSyDvb_efaUMgzcsw4l-xbhtb0ryFtVqwblY",
+            "api_key": "***********",
             "api_base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
             "api_request_address": "chat/completions",
             "model_format": "openai",
@@ -52,7 +52,7 @@
         },
         "Gemini/Gemini-2.0-Pro": {
             "model_id": "gemini-2.0-pro-exp",
-            "api_key": "AIzaSyDvb_efaUMgzcsw4l-xbhtb0ryFtVqwblY",
+            "api_key": "***********",
             "api_base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
             "api_request_address": "chat/completions",
             "model_format": "openai",
@@ -68,7 +68,7 @@
             "*"
         ],
         "log_level": "INFO",
-        "api_key": "sk-ZYlMM9BOtJLJP5rJ9d808cB0A2E54b73A1C11e0bA7358323"
+        "api_key": "123456"
     },
     "composite_models": {
         "deepclaude": {
