@@ -4,10 +4,6 @@ FROM python:3.11-slim
 # 设置工作目录
 WORKDIR /app
 
-# 设置环境变量
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
-
 # 安装依赖
 RUN pip install --no-cache-dir \
     aiohttp==3.11.11 \
@@ -20,6 +16,7 @@ RUN pip install --no-cache-dir \
 
 # 复制项目文件
 COPY ./app ./app
+COPY ./frontend ./frontend
 
 # 暴露端口
 EXPOSE 8000
