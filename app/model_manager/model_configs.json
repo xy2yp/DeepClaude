@@ -1,0 +1,101 @@
+{
+    "reasoner_models": {
+        "DeepSeek/DeepSeek-Reasoner": {
+            "model_id": "deepseek-reasoner",
+            "api_key": "sk-e68b2ff241b840dd9ad3d6c12d6e8516",
+            "api_base_url": "https://api.deepseek.com",
+            "api_request_address": "v1/chat/completions",
+            "is_origin_reasoning": true,
+            "is_valid": true
+        },
+        "Volcengine/DeepSeek-R1": {
+            "model_id": "deepseek-r1-250120",
+            "api_key": "79d84a49-f561-4d4d-99fc-0a56c0c0fa08",
+            "api_base_url": "https://ark.cn-beijing.volces.com/api",
+            "api_request_address": "v3/chat/completions",
+            "is_origin_reasoning": true,
+            "is_valid": true,
+            "recommendation": {
+                "link": "https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=AK7Q5AEU",
+                "content": "点击链接注册火山云，免费领 15 元代金券，免费抵扣 375 万tokens，流畅不卡顿"
+            }
+        }
+    },
+    "target_models": {
+        "Anthropic/Claude-3-7-Sonnet": {
+            "model_id": "claude-3-7-sonnet-20250219",
+            "api_key": "sk-e68b2ff241b840dd9ad3d6c12d6e8516",
+            "api_base_url": "https://api.anthropic.com",
+            "api_request_address": "v1/messages",
+            "model_format": "anthropic",
+            "is_valid": false
+        },
+        "DMXapi/Claude-3-7-Sonnet": {
+            "model_id": "claude-3-7-sonnet-20250219",
+            "api_key": "sk-nLIpvCb3vSUib6GX5gKpSfx8QJdUPfUD7Ae3KYsIi0mbGJZm",
+            "api_base_url": "https://vip.dmxapi.com",
+            "api_request_address": "v1/chat/completions",
+            "model_format": "openai",
+            "is_valid": true,
+            "recommendation": {
+                "link": "https://vip.dmxapi.com/register?aff=yxJ9",
+                "content": "点击链接注册 DMXapi 大模型分发平台，免费领 1 美金注册奖励，可用于 Claude 3.7 Sonnet"
+            }
+        },
+        "OpenRouter/Claude-3-7-Sonnet": {
+            "model_id": "anthropic/claude-3.7-sonnet",
+            "api_key": "********",
+            "api_base_url": "https://openrouter.ai/api",
+            "api_request_address": "v1/chat/completions",
+            "model_format": "openai",
+            "is_valid": true
+        },
+        "Gemini/Gemini-2.0-Flash": {
+            "model_id": "gemini-2.0-flash",
+            "api_key": "AIzaSyA_xCriZ-SVX3fwiAmIlZohhhe0v85jz7Q",
+            "api_base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+            "api_request_address": "chat/completions",
+            "model_format": "openai",
+            "is_valid": true
+        },
+        "Gemini/Gemini-2.0-Pro": {
+            "model_id": "gemini-2.0-pro",
+            "api_key": "AIzaSyA_xCriZ-SVX3fwiAmIlZohhhe0v85jz7Q",
+            "api_base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+            "api_request_address": "chat/completions",
+            "model_format": "openai",
+            "is_valid": true
+        }
+    },
+    "proxy": {
+        "proxy_open": true,
+        "proxy_address": "127.0.0.1:7890"
+    },
+    "system": {
+        "allow_origins": [
+            "*"
+        ],
+        "log_level": "INFO",
+        "api_key": "12345678"
+    },
+    "composite_models": {
+        "deepclaude": {
+            "model_id": "deepclaude",
+            "reasoner_models": "Volcengine/DeepSeek-R1",
+            "target_models": "DMXapi/Claude-3-7-Sonnet",
+            "is_valid": true
+        },
+        "deepgeminiflash": {
+            "model_id": "deepgeminiflash",
+            "reasoner_models": "Volcengine/DeepSeek-R1",
+            "target_models": "Gemini/Gemini-2.0-Flash",
+            "is_valid": true
+        },
+        "deepgeminipro": {
+            "model_id": "deepgeminipro",
+            "reasoner_models": "Volcengine/DeepSeek-R1",
+            "target_models": "Gemini/Gemini-2.0-Pro",
+            "is_valid": true
+        }
+    }
+}

@@ -21,6 +21,7 @@ class OpenAICompatibleClient(BaseClient):
         api_key: str,
         api_url: str,
         timeout: Optional[aiohttp.ClientTimeout] = None,
+        proxy: str = None,
     ):
         """初始化 OpenAI 兼容客户端
 
@@ -28,8 +29,9 @@ class OpenAICompatibleClient(BaseClient):
             api_key: API密钥
             api_url: API地址
             timeout: 请求超时设置,None则使用默认值
+            proxy: 代理服务器地址
         """
-        super().__init__(api_key, api_url, timeout)
+        super().__init__(api_key, api_url, timeout, proxy=proxy)
 
     def _get_headers(self) -> Dict[str, str]:
         """获取请求头

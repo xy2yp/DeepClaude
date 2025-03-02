@@ -13,14 +13,16 @@ class DeepSeekClient(BaseClient):
         self,
         api_key: str,
         api_url: str = "https://api.siliconflow.cn/v1/chat/completions",
+        proxy: str = None,
     ):
         """初始化 DeepSeek 客户端
 
         Args:
             api_key: DeepSeek API密钥
             api_url: DeepSeek API地址
+            proxy: 代理服务器地址
         """
-        super().__init__(api_key, api_url)
+        super().__init__(api_key, api_url, proxy=proxy)
 
     def _process_think_tag_content(self, content: str) -> tuple[bool, str]:
         """处理包含 think 标签的内容
