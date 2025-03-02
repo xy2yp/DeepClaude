@@ -49,7 +49,6 @@ class ClaudeClient(BaseClient):
                 内容类型: "answer"
                 内容: 实际的文本内容
         """
-
         if self.provider == "openrouter":
             # 转换模型名称为 OpenRouter 格式
             model = "anthropic/claude-3.5-sonnet"
