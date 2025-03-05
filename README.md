@@ -141,7 +141,7 @@ Step 4. 打开浏览器访问 http://127.0.0.1:8000/config 输入默认 api key�
   - DeepSeek官方 `deepseek-reasoner`
   - Siliconflow `deepseek-ai/deepseek-r1`
 - 不支持原生推理: 推理模型在`content`字段中以`<think></think>`标签包裹推理内容返回. 例如:
-  - 派欧算力云 `deepseek-ai/deepseek-r1`, `deepseek/deepseek-r1/community`, `deepseek/deepseek-r1-turbo`
+  - 派欧算力云 `deepseek/deepseek-r1`, `deepseek/deepseek-r1/community`, `deepseek/deepseek-r1-turbo`
   - AiHubMix `aihubmix-DeepSeek-R1`
   - Cluade 3.7 Sonnet Thinking
 
