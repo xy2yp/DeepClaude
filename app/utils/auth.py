@@ -13,6 +13,12 @@ def get_api_key():
     system_config = model_manager.config.get("system", {})
     api_key = system_config.get("api_key")
     
+    if api_key is None:
+        logger.error("API key not found in config")
+        raise HTTPException(
+            status_code=500,
+            detail="API key not configured"
+        )
     # 打印API密钥的前4位用于调试
     logger.info(f"Loaded API key from config: {api_key[:4] if len(api_key) >= 4 else api_key}")
     
