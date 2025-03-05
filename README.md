@@ -33,6 +33,8 @@
 <details>
 <summary><strong>更新日志：</strong></summary> 
 <div>
+2025-03-05.1: 更改docker compose配置, 使用volume将容器配置文件绑定至本地, 避免重启容器时丢失配置. 同时设置失败自动重启.
+   
 2025-03-02.1: 更新 1.0 版本，支持图形化配置界面，取消 .env 配置，预配置模板，配置更方便
 
 2025-02-25.1: 添加 system message 对于 Claude 3.5 Sonnet 的支持
