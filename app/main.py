@@ -1,88 +1,52 @@
 import os
-import sys
+import logging
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
-from app.deepclaude.deepclaude import DeepClaude
-from app.openai_composite import OpenAICompatibleComposite
 from app.utils.auth import verify_api_key
 from app.utils.logger import logger
-from app.config import load_models_config
+from app.manager import model_manager
 
 # 加载环境变量
 load_dotenv()
 
+# 获取模型管理器
+from app.manager.model_manager import model_manager
+
+# 从配置文件中读取系统设置
+system_config = model_manager.config.get("system", {})
+allow_origins = system_config.get("allow_origins", ["*"])
+log_level = system_config.get("log_level", "INFO")
+api_key = system_config.get("api_key")
+
+# 设置日志级别（不重新创建logger）
+logger.setLevel(getattr(logging, log_level))
+
+# 静态文件目录
+static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+
+# 创建 FastAPI 应用
 app = FastAPI(title="DeepClaude API")
 
-# 从环境变量获取 CORS配置, API 密钥、地址以及模型名称
-ALLOW_ORIGINS = os.getenv("ALLOW_ORIGINS", "*")
-
-CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
-ENV_CLAUDE_MODEL = os.getenv("CLAUDE_MODEL")
-CLAUDE_PROVIDER = os.getenv(
-    "CLAUDE_PROVIDER", "anthropic"
-)  # Claude模型提供商, 默认为anthropic
-CLAUDE_API_URL = os.getenv("CLAUDE_API_URL", "https://api.anthropic.com/v1/messages")
-
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = os.getenv(
-    "DEEPSEEK_API_URL", "https://api.deepseek.com/v1/chat/completions"
-)
-DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-reasoner")
-
-OPENAI_COMPOSITE_API_KEY = os.getenv("OPENAI_COMPOSITE_API_KEY")
-OPENAI_COMPOSITE_API_URL = os.getenv("OPENAI_COMPOSITE_API_URL")
-OPENAI_COMPOSITE_MODEL = os.getenv("OPENAI_COMPOSITE_MODEL")
-
-IS_ORIGIN_REASONING = os.getenv("IS_ORIGIN_REASONING", "True").lower() == "true"
-
-# CORS设置
-allow_origins_list = (
-    ALLOW_ORIGINS.split(",") if ALLOW_ORIGINS else []
-)  # 将逗号分隔的字符串转换为列表
-
+# 配置 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_origins_list,
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 创建 DeepClaude 实例, 提出为Global变量
-if not DEEPSEEK_API_KEY or not CLAUDE_API_KEY:
-    logger.critical("请设置环境变量 CLAUDE_API_KEY 和 DEEPSEEK_API_KEY")
-    sys.exit(1)
-
-deep_claude = DeepClaude(
-    DEEPSEEK_API_KEY,
-    CLAUDE_API_KEY,
-    DEEPSEEK_API_URL,
-    CLAUDE_API_URL,
-    CLAUDE_PROVIDER,
-    IS_ORIGIN_REASONING,
-)
-
-# 创建 OpenAICompatibleComposite 实例
-# if not DEEPSEEK_API_KEY or not OPENAI_COMPOSITE_API_KEY:
-#     logger.critical("请设置环境变量 OPENAI_COMPOSITE_API_KEY 和 DEEPSEEK_API_KEY")
-#     sys.exit(1)
-
-openai_composite = OpenAICompatibleComposite(
-    DEEPSEEK_API_KEY,
-    OPENAI_COMPOSITE_API_KEY,
-    DEEPSEEK_API_URL,
-    OPENAI_COMPOSITE_API_URL,
-    IS_ORIGIN_REASONING,
-)
+# 挂载静态文件目录
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # 验证日志级别
 logger.debug("当前日志级别为 DEBUG")
 logger.info("开始请求")
-
 
 @app.get("/", dependencies=[Depends(verify_api_key)])
 async def root():
@@ -90,24 +54,10 @@ async def root():
     return {"message": "Welcome to DeepClaude API"}
 
 
-@app.get("/v1/models")
-async def list_models():
-    """
-    获取可用模型列表
-    返回格式遵循 OpenAI API 标准
-    """
-    try:
-        config = load_models_config()
-        return {"object": "list", "data": config["models"]}
-    except Exception as e:
-        logger.error(f"加载模型配置时发生错误: {e}")
-        return {"error": str(e)}
-
-
 @app.post("/v1/chat/completions", dependencies=[Depends(verify_api_key)])
 async def chat_completions(request: Request):
-    """处理聊天完成请求，支持流式和非流式输出
-
+    """处理聊天完成请求，使用 ModelManager 进行处理
+    
     请求体格式应与 OpenAI API 保持一致，包含：
     - messages: 消息列表
     - model: 模型名称（必需）
@@ -117,83 +67,74 @@ async def chat_completions(request: Request):
     - presence_penalty: 话题新鲜度（可选）
     - frequency_penalty: 频率惩罚度（可选）
     """
-
     try:
-        # 1. 获取基础信息
+        # 获取请求体
         body = await request.json()
-        messages = body.get("messages")
-        model = body.get("model")
-
-        if not model:
-            raise ValueError("必须指定模型名称")
-
-        # 2. 获取并验证参数
-        model_arg = get_and_validate_params(body)
-        stream = model_arg[4]  # 获取 stream 参数
-
-        # 3. 根据模型选择不同的处理方式
-        if model == "deepclaude":
-            # 使用 DeepClaude
-            claude_model = ENV_CLAUDE_MODEL if ENV_CLAUDE_MODEL else "claude-3-5-sonnet-20241022"
-            if stream:
-                return StreamingResponse(
-                    deep_claude.chat_completions_with_stream(
-                        messages=messages,
-                        model_arg=model_arg[:4],
-                        deepseek_model=DEEPSEEK_MODEL,
-                        claude_model=claude_model,
-                    ),
-                    media_type="text/event-stream",
-                )
-            else:
-                return await deep_claude.chat_completions_without_stream(
-                    messages=messages,
-                    model_arg=model_arg[:4],
-                    deepseek_model=DEEPSEEK_MODEL,
-                    claude_model=claude_model,
-                )
-        else:
-            # 使用 OpenAI 兼容组合模型
-            if stream:
-                return StreamingResponse(
-                    openai_composite.chat_completions_with_stream(
-                        messages=messages,
-                        model_arg=model_arg[:4],
-                        deepseek_model=DEEPSEEK_MODEL,
-                        target_model=OPENAI_COMPOSITE_MODEL,
-                    ),
-                    media_type="text/event-stream",
-                )
-            else:
-                return await openai_composite.chat_completions_without_stream(
-                    messages=messages,
-                    model_arg=model_arg[:4],
-                    deepseek_model=DEEPSEEK_MODEL,
-                    target_model=OPENAI_COMPOSITE_MODEL,
-                )
-
+        # 使用 ModelManager 处理请求，ModelManager 将处理不同的模型组合
+        return await model_manager.process_request(body)
     except Exception as e:
         logger.error(f"处理请求时发生错误: {e}")
         return {"error": str(e)}
 
+@app.get("/v1/models", dependencies=[Depends(verify_api_key)])
+async def list_models():
+    """获取可用模型列表
+    
+    使用 ModelManager 获取从配置文件中读取的模型列表
+    返回格式遵循 OpenAI API 标准
+    """
+    try:
+        models = model_manager.get_model_list()
+        return {"object": "list", "data": models}
+    except Exception as e:
+        logger.error(f"获取模型列表时发生错误: {e}")
+        return {"error": str(e)}
 
-def get_and_validate_params(body):
-    """提取获取和验证请求参数的函数"""
-    # TODO: 默认值设定允许自定义
-    temperature: float = body.get("temperature", 0.5)
-    top_p: float = body.get("top_p", 0.9)
-    presence_penalty: float = body.get("presence_penalty", 0.0)
-    frequency_penalty: float = body.get("frequency_penalty", 0.0)
-    stream: bool = body.get("stream", True)
 
-    if "sonnet" in body.get(
-        "model", ""
-    ):  # Only Sonnet 设定 temperature 必须在 0 到 1 之间
-        if (
-            not isinstance(temperature, (float))
-            or temperature < 0.0
-            or temperature > 1.0
-        ):
-            raise ValueError("Sonnet 设定 temperature 必须在 0 到 1 之间")
+@app.get("/config")
+async def config_page():
+    """配置页面
+    
+    返回配置页面的 HTML
+    """
+    try:
+        html_path = os.path.join(static_dir, "index.html")
+        if not os.path.exists(html_path):
+            logger.error(f"HTML 文件不存在: {html_path}")
+            return {"error": "配置页面文件不存在"}
+        return FileResponse(html_path)
+    except Exception as e:
+        logger.error(f"返回配置页面时发生错误: {e}")
+        return {"error": str(e)}
 
-    return (temperature, top_p, presence_penalty, frequency_penalty, stream)
+@app.get("/v1/config", dependencies=[Depends(verify_api_key)])
+async def get_config():
+    """获取模型配置
+    
+    返回当前的模型配置数据
+    """
+    try:
+        # 使用 ModelManager 获取配置
+        config = model_manager.get_config()
+        return config
+    except Exception as e:
+        logger.error(f"获取配置时发生错误: {e}")
+        return {"error": str(e)}
+
+@app.post("/v1/config", dependencies=[Depends(verify_api_key)])
+async def update_config(request: Request):
+    """更新模型配置
+    
+    接收并保存新的模型配置数据
+    """
+    try:
+        # 获取请求体
+        body = await request.json()
+        
+        # 使用 ModelManager 更新配置
+        model_manager.update_config(body)
+        
+        return {"message": "配置已更新"}
+    except Exception as e:
+        logger.error(f"更新配置时发生错误: {e}")
+        return {"error": str(e)}

@@ -14,15 +14,17 @@ class ClaudeClient(BaseClient):
         api_key: str,
         api_url: str = "https://api.anthropic.com/v1/messages",
         provider: str = "anthropic",
+        proxy: str = None,
     ):
         """初始化 Claude 客户端
 
         Args:
             api_key: Claude API密钥
             api_url: Claude API地址
-            is_openrouter: 是否使用 OpenRouter API
+            provider: API提供商，支持 anthropic、openrouter、oneapi
+            proxy: 代理服务器地址
         """
-        super().__init__(api_key, api_url)
+        super().__init__(api_key, api_url, proxy=proxy)
         self.provider = provider
 
     async def stream_chat(
@@ -47,7 +49,6 @@ class ClaudeClient(BaseClient):
                 内容类型: "answer"
                 内容: 实际的文本内容
         """
-
         if self.provider == "openrouter":
             # 转换模型名称为 OpenRouter 格式
             model = "anthropic/claude-3.5-sonnet"

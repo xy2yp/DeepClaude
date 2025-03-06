@@ -24,6 +24,7 @@ class BaseClient(ABC):
         api_key: str,
         api_url: str,
         timeout: Optional[aiohttp.ClientTimeout] = None,
+        proxy: Optional[str] = None,
     ):
         """初始化基础客户端
 
@@ -31,10 +32,12 @@ class BaseClient(ABC):
             api_key: API密钥
             api_url: API地址
             timeout: 请求超时设置,None则使用默认值
+            proxy: 代理服务器地址，例如 "http://127.0.0.1:7890"
         """
         self.api_key = api_key
         self.api_url = api_url
         self.timeout = timeout or self.DEFAULT_TIMEOUT
+        self.proxy = proxy
 
     async def _make_request(
         self, headers: dict, data: dict, timeout: Optional[aiohttp.ClientTimeout] = None
@@ -59,9 +62,24 @@ class BaseClient(ABC):
         try:
             # 使用 connector 参数来优化连接池
             connector = aiohttp.TCPConnector(limit=100, force_close=True)
+            
+            # 处理代理地址格式
+            proxy_url = None
+            if self.proxy:
+                # 如果代理地址不包含协议前缀，添加 http:// 前缀
+                if self.proxy and not self.proxy.startswith(('http://', 'https://', 'socks://', 'socks5://')):
+                    proxy_url = f"http://{self.proxy}"
+                else:
+                    proxy_url = self.proxy
+                logger.info(f"使用代理: {proxy_url}")
+            
             async with aiohttp.ClientSession(connector=connector) as session:
                 async with session.post(
-                    self.api_url, headers=headers, json=data, timeout=request_timeout
+                    self.api_url, 
+                    headers=headers, 
+                    json=data, 
+                    timeout=request_timeout,
+                    proxy=proxy_url
                 ) as response:
                     # 检查响应状态
                     if not response.ok:
