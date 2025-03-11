@@ -2,6 +2,7 @@ version: '1.0'
 
 services:
   deepclaude:
+    container_name: deepclaude
     image: ghcr.io/erlichliu/deepclaude:latest
     build:
       context: .
