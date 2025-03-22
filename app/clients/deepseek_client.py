@@ -72,9 +72,12 @@ class DeepSeekClient(BaseClient):
         data = {
             "model": model,
             "messages": messages,
-            "stream": True,
-            "max_tokens": 5
+            "stream": True
         }
+
+        # 只在支持原生推理时采用｜ps: 如遇到支持原生推理字段的模型仍返回推理内容不足，可直接注释此区域
+        if is_origin_reasoning:
+            data["max_tokens"] = 5
 
         logger.debug(f"开始流式对话：{data}")
 
