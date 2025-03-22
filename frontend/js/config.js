@@ -182,6 +182,7 @@ function renderReasonerModel(name, config) {
     form.querySelector('.api-request-address').value = config.api_request_address || '';
     form.querySelector('.is-origin-reasoning').checked = config.is_origin_reasoning || false;
     form.querySelector('.is-valid').checked = config.is_valid || false;
+    form.querySelector('.is-proxy-open').checked = config.proxy_open || false;
     
     // 绑定保存按钮事件
     form.querySelector('.save-model-btn').addEventListener('click', () => {
@@ -225,6 +226,7 @@ function renderTargetModel(name, config) {
     form.querySelector('.api-request-address').value = config.api_request_address || '';
     form.querySelector('.model-format').value = config.model_format || 'openai';
     form.querySelector('.is-valid').checked = config.is_valid || false;
+    form.querySelector('.is-proxy-open').checked = config.proxy_open || false;
     
     // 绑定保存按钮事件
     form.querySelector('.save-model-btn').addEventListener('click', () => {
