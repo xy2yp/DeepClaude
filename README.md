@@ -31,8 +31,6 @@
 ---
 
 <details>
-
-<details>
 <summary><strong> 友情链接：Ten Agent: https://github.com/TEN-framework/TEN-Agent </strong></summary>
 </details>
 
