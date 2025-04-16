@@ -13,10 +13,10 @@
 <br />
 在最新的 1.0 版本，我们已经实现了配置界面，部署更简单。
 1.编程：推荐 DeepSeek r1 + Claude 3.7 Sonnet 组合，效果最好；
-2.内容创作：推荐 DeepSeek r1 + Gemini 2.0 Flash 或 Gemini 2.0 Pro 组合，效果最好，并且可以完全免费使用。
+2.内容创作：推荐 DeepSeek r1 + Gemini 2.0 Flash 或 Gemini 2.5 Pro 组合，效果最好，并且可以完全免费使用。
 <br />
 对于不太会部署，只是希望使用上最强组合模型的朋友，可以直接访问 Erlich 个人网站自助购买按量付费的 API：https://erlich.fun/deepclaude-pricing
-也可以直接联系 Erlich（微信号：erlichliu1）</h4>
+也可以直接联系 Erlich（微信号：geekthings）</h4>
 </div>
 
 
@@ -31,8 +31,17 @@
 ---
 
 <details>
+<summary><strong> 友情链接：Ten Agent: https://github.com/TEN-framework/TEN-Agent </strong></summary>
+</details>
+
+---
+
+<details>
+
 <summary><strong>更新日志：</strong></summary> 
 <div>
+
+2025-03-22.1: 支持根据不同模型设置是否开启代理，提高运行效率。
 
 2025-03-10.1: deepseek r1 推理部分 max_token 改为 5，节省输出 Tokens 消耗；非流式输出部分增加 reasoning_content 数据字段的返回；将非流式输出设置为缺省值，方便 dify 等工具使用。
 

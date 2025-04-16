@@ -126,6 +126,9 @@ class ModelManager:
             proxy = proxy_config.get("proxy_address")
             logger.info(f"模型 {model_name} 将使用代理: {proxy}")
         
+        # 默认设置为True, 和默认行为保持一致（只要全局开始proxy_open, 则模型默认开启proxy_open）
+        reasoner_proxy = proxy if reasoner_config.get('proxy_open', True) else None
+        target_proxy = proxy if target_config.get('proxy_open', True) else None
         # 创建模型实例
         if target_config.get("model_format", "") == "anthropic":
             # 创建 DeepClaude 实例
@@ -136,7 +139,8 @@ class ModelManager:
                 claude_api_url=f"{target_config['api_base_url']}/{target_config['api_request_address']}",
                 claude_provider="anthropic",
                 is_origin_reasoning=reasoner_config.get("is_origin_reasoning", self.is_origin_reasoning),
-                proxy=proxy,
+                reasoner_proxy=reasoner_proxy,
+                target_proxy=target_proxy,
             )
         else:
             # 创建 OpenAICompatibleComposite 实例
@@ -146,7 +150,8 @@ class ModelManager:
                 deepseek_api_url=f"{reasoner_config['api_base_url']}/{reasoner_config['api_request_address']}",
                 openai_api_url=f"{target_config['api_base_url']}/{target_config['api_request_address']}",
                 is_origin_reasoning=reasoner_config.get("is_origin_reasoning", self.is_origin_reasoning),
-                proxy=proxy,
+                reasoner_proxy=reasoner_proxy,
+                target_proxy=target_proxy,
             )
         
         # 缓存实例

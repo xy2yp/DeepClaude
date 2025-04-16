@@ -10,6 +10,11 @@ from app.utils.auth import verify_api_key
 from app.utils.logger import logger
 from app.manager import model_manager
 
+# 版本信息
+VERSION = "v1.0.1"
+
+# 显示当前的版本
+logger.info(f"当前版本: {VERSION}")
 
 # 获取模型管理器
 from app.manager.model_manager import model_manager
@@ -48,7 +53,7 @@ logger.info("开始请求")
 @app.get("/", dependencies=[Depends(verify_api_key)])
 async def root():
     logger.info("访问了根路径")
-    return {"message": "Welcome to DeepClaude API"}
+    return {"message": "Welcome to DeepClaude API", "version": VERSION}
 
 
 @app.post("/v1/chat/completions", dependencies=[Depends(verify_api_key)])
